@@ -2,3 +2,5 @@
 
 Can't decide where to go for lunch? Let lunch roulette to help you to decide.
 just change the names of restaurants in the public/wheel.html to your favorite ones, and that's it. 
+
+enjoy!
