@@ -11,12 +11,12 @@
   var restaraunts = [
         "Ambrosia",
         "Chipotle",
-        "Briani",
+        "Biriyani",
         "Cafe Manhattan",
         "Fasting",
         "Japanese",
-        "Szechuan on 38th",
-        "Mauz"];
+        "Szechuan",
+        "Maoz"];
   
   var startAngle = 0;
   var arc = 2 * Math.PI / restaraunts.length ;
@@ -27,7 +27,8 @@
   var spinTimeTotal = 0;
   
   var ctx;
-  
+  var spin_snd = new Audio("images/spin.mp3");
+ 
   function draw() {
     drawRouletteWheel();
   }
@@ -92,8 +93,7 @@
     // spinTimeTotal = Math.random() * 3 + 4 * 1000;
     spinTimeTotal = 15 * 1000;
     rotateWheel();
-    var snd = new Audio("images/spin.mp3");
-    snd.play();
+    spin_snd.play();
   }
   
   function rotateWheel() {
