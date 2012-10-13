@@ -1,14 +1,41 @@
 $(function() {
   var Item = Backbone.Model.extend({
     initialize: function(){
+    },
+
+    clear: function() {
+      this.destroy(); // remove from local storage
     }
   });
 
   var Items = Backbone.Collection.extend({
     model: Item,
-    url: 'abc'
+    localStorage: new Store("roulette")
   });
 
+
+  var ItemView = Backbone.View.extend({
+    tagName:  "li",
+
+    template: _.template("<%= name %> <a class='destroy'>X</a>"),
+
+    events: {
+      "click a.destroy" : "clear",
+    },
+
+    initialize: function() {
+      this.model.bind('destroy', this.remove, this);
+    },
+
+    render: function() {
+      this.$el.html(this.template(this.model.toJSON()));
+      return this;
+    },
+
+    clear: function(){
+      this.model.clear();
+    }
+  });
 
   var Wheel = Backbone.View.extend({
     el: "#widget",
@@ -25,27 +52,53 @@ $(function() {
     spin_snd: new Audio("images/spin.mp3"),
 
     events: {
-      "keypress .new-item":  "createOnEnter"
+      "keypress .new-item":  "createOnEnter",
+      "click .spin-btn": "spin"
     },
 
     initialize: function(items) {
+      this.spin_snd.preload = 'auto';
+      this.spin_snd.load();
       this.input = this.$(".new-item");
+      this.spin_btn = this.$(".spin-btn");
       this.wheel = this.$("#wheel")[0];
+
       this.items = items;
+      this.items.bind('add', this.addOne, this);
+      this.items.bind('remove', this.render, this);
+
+      this.items.fetch(); // load from local storage
+      // populate left side list
+      _.each(this.items.models, function(item){
+        var view = new ItemView({model: item});
+        this.$("#items-list").append(view.render().el);
+      });
     },
 
     createOnEnter: function(e) {
-      console.log(e.keyCode);
       if (e.keyCode != 13) return;
       if (!this.input.val()) return;
 
       this.items.create({name: this.input.val()});
       this.input.val('');
-      this.render();
+    },
+
+    addOne: function(item) {
+      var view = new ItemView({model: item});
+      item.save();
+      this.$("#items-list").append(view.render().el); // add new item to the left
+
+      this.render();  // redraw the wheel
     },
 
     render: function() {
-      this.drawRouletteWheel();
+      if(this.items.length < 2){
+        this.spin_btn.hide();
+        this.wheel.width = this.wheel.width; // clear canvas
+      }else{
+        this.spin_btn.show();
+        this.drawRouletteWheel();
+      }
     },
 
     drawRouletteWheel: function(){
@@ -68,7 +121,7 @@ $(function() {
         
         for(var i = 0; i < this.items.length; i++) {
           var angle = this.startAngle + i * this.arc;
-          this.ctx.fillStyle = this.colors[i];
+          this.ctx.fillStyle = this.colors[i % this.colors.length];
           
           this.ctx.beginPath();
           this.ctx.arc(250, 250, outsideRadius, angle, angle + this.arc, false);
@@ -110,8 +163,8 @@ $(function() {
       this.spinTime = 0;
       // spinTimeTotal = Math.random() * 3 + 4 * 1000;
       this.spinTimeTotal = 15 * 1000;
-      this.rotateWheel();
       this.spin_snd.play();
+      this.rotateWheel();
     },
 
     rotateWheel: function() {
@@ -145,20 +198,7 @@ $(function() {
     }
   });
 
-  var arr = [new Item({name: "Japanese"}),
-             new Item({name: "Chinese"}),
-             new Item({name: "Burger"})
-            ];
-  var items_col = new Items(arr);
-
-  //_.each(items.models, function(item){
-    //console.log(item.get("name"));
-  //});
-
+  var items_col = new Items;
   window.wheel_obj = new Wheel(items_col);
   window.wheel_obj.render();
-
-  $('.spin-btn').bind('click', function(){
-    window.wheel_obj.spin();
-  });
 });

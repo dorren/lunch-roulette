@@ -1,25 +1,75 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Backbone.js based Lunch Roulette</title>
+  <title>The Wheel says</title>
   <script src="javascripts/jquery-1.8.2.min.js"></script>
   <script src="javascripts/underscore.js"></script>
   <script src="javascripts/backbone.js"></script>
+  <script src="javascripts/backbone-localstorage.js"></script>
 </head>
 <body>
-<audio preload="auto">
-  <source src="images/spin.mp3" type="audio/mpeg" />
-  Your browser does not support the audio element.
-</audio>
+<style>
+  button, input, textarea, select, isindex {
+      font-family: inherit;
+  }
 
-<div id="widget" style="width: 500px">
-  <input class="new-item" type="text" placeholder="New choice"><br/>
-  <ul id="items-list"></ul>
-  <div style="width:500px; text-align:center;">
-    <input  type="button" value="spin"  class="btn spin-btn" /> 
+  body{
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  }
+
+
+
+  #widget {
+    margin:auto;
+    overflow: auto;
+  }
+
+  a.destroy {
+    color: #8af;
+    display: none;
+  }
+
+  button.spin-btn {
+    font-size: 120%;
+    width: 100px;
+  }
+
+  ul {
+    list-style-type: none;
+    padding: 3px 10px;
+  }
+
+  li:hover a.destroy {
+    display: inline-block;
+  }
+
+  .data {
+    min-height: 500px;
+    background-color: #EEE;
+  }
+
+  .new-item {
+    font-size: 120%;
+  }
+  
+</style>
+
+
+<div id="widget" style="width: 1000px">
+  <h2>The Wheel Says ...</h2>
+  <div class="data" style="float:left">
+    <input class="new-item" type="text" placeholder="New choice"><br/>
+    <ul id="items-list"></ul>
   </div>
-  <canvas id="wheel" width="500" height="500"></canvas>
+
+  <div style="float:left">
+    <div style="width:500px; text-align:center;">
+      <button type="button" class="spin-btn">Spin</button>
+    </div>
+    <canvas id="wheel" width="500" height="500"></canvas>
+  </div>
 </div>
-    <script src="javascripts/lunch_roulette.js"></script>
+
+<script src="javascripts/lunch_roulette.js"></script>
 </body>
 </html>
