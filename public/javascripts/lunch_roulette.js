@@ -5,14 +5,13 @@ $(function() {
   });
 
   var Items = Backbone.Collection.extend({
-    model: Item
+    model: Item,
+    url: 'abc'
   });
 
 
   var Wheel = Backbone.View.extend({
-    items: [],
-    //tagName:   "canvas",
-    el: "#wheel",
+    el: "#widget",
     colors: ["#B8D430", "#3AB745", "#029990", "#3501CB",
              "#2E2C75", "#673A7E", "#CC0071", "#F80120",
              "#F35B20", "#FB9A00", "#FFCC00", "#FEF200"],
@@ -26,11 +25,23 @@ $(function() {
     spin_snd: new Audio("images/spin.mp3"),
 
     events: {
-
+      "keypress .new-item":  "createOnEnter"
     },
 
     initialize: function(items) {
+      this.input = this.$(".new-item");
+      this.wheel = this.$("#wheel")[0];
       this.items = items;
+    },
+
+    createOnEnter: function(e) {
+      console.log(e.keyCode);
+      if (e.keyCode != 13) return;
+      if (!this.input.val()) return;
+
+      this.items.create({name: this.input.val()});
+      this.input.val('');
+      this.render();
     },
 
     render: function() {
@@ -40,7 +51,7 @@ $(function() {
     drawRouletteWheel: function(){
       this.arc = 2 * Math.PI / this.items.length;
 
-      var canvas = $(this.el)[0];
+      var canvas = this.wheel; //$(this.el)[0];
       if (canvas.getContext) {
         var outsideRadius = 200;
         var textRadius = 160;
@@ -54,7 +65,6 @@ $(function() {
         this.ctx.lineWidth = 2;
         
         this.ctx.font = 'bold 12px sans-serif';
-        console.log(this.items.length);
         
         for(var i = 0; i < this.items.length; i++) {
           var angle = this.startAngle + i * this.arc;
@@ -148,7 +158,7 @@ $(function() {
   window.wheel_obj = new Wheel(items_col);
   window.wheel_obj.render();
 
-  $('#spin-btn').bind('click', function(){
+  $('.spin-btn').bind('click', function(){
     window.wheel_obj.spin();
   });
 });

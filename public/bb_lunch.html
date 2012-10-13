@@ -7,8 +7,19 @@
   <script src="javascripts/backbone.js"></script>
 </head>
 <body>
-<input id="spin-btn" type="button" value="spin"  style="float: left;" /> 
-<canvas id="wheel" width="500" height="500"></canvas>
-  <script src="javascripts/lunch_roulette.js"></script>
+<audio preload="auto">
+  <source src="images/spin.mp3" type="audio/mpeg" />
+  Your browser does not support the audio element.
+</audio>
+
+<div id="widget" style="width: 500px">
+  <input class="new-item" type="text" placeholder="New choice"><br/>
+  <ul id="items-list"></ul>
+  <div style="width:500px; text-align:center;">
+    <input  type="button" value="spin"  class="btn spin-btn" /> 
+  </div>
+  <canvas id="wheel" width="500" height="500"></canvas>
+</div>
+    <script src="javascripts/lunch_roulette.js"></script>
 </body>
 </html>
