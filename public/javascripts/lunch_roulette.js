@@ -17,7 +17,7 @@ $(function() {
   var ItemView = Backbone.View.extend({
     tagName:  "li",
 
-    template: _.template("<%= name %> <a class='destroy'>X</a>"),
+    template: _.template("<%= name %> <a class='destroy'>&#215;</a>"),
 
     events: {
       "click a.destroy" : "clear",
@@ -68,6 +68,7 @@ $(function() {
       this.items.bind('remove', this.render, this);
 
       this.items.fetch(); // load from local storage
+
       // populate left side list
       _.each(this.items.models, function(item){
         var view = new ItemView({model: item});
